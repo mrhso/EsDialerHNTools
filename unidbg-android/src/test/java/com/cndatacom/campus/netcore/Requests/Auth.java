@@ -1,32 +1,22 @@
 package com.cndatacom.campus.netcore.Requests;
 
-import com.anjuke.mobile.sign.eSufing;
+import KO.utils.Constants;
 
-public class Auth extends Request{
-	
-	final eSufing pa;
-	
-	public Auth(eSufing par) {
-		pa = par;
+public class Auth extends Request {
+
+	String Ticket;
+
+	public Auth(String ticket) {
+		Ticket = ticket;
 	}
-	
+
+	// Optional -> host-name gwip sysinfo ipv6 mac verify(?)
 	@Override
 	public String doAction() {
-		return HEAD + 
-		"<request><user-agent>" +
-		   pa.UserAgent
-		+ "</user-agent><client-id>"+
-		   pa.currentClientID.toString()
-		   +"</client-id><local-time>"+
-		   LocalSimpleDateFormat
-		   +"</local-time><ipv4>"+
-		   pa.IPV4
-		   +"</ipv4></request>";  //ipv6 mac
-		
-		//<ticket> </ticket>
-		//userid(account)
-		//passwd
-		//verify (If needed)
-
+		return HEAD + "<request><user-agent>" + Constants.getUseragent() + "</user-agent><client-id>"
+				+ Constants.getCurrentClientID().toString() + "</client-id><local-time>" + getTime() + "</local-time><ipv4>"
+				+ Constants.getIPV4() + "</ipv4><userid>" + Constants.getAccount() + "</userid><passwd>" + Constants.getPassword()
+				+ "</passwd><ticket>" + Ticket + "</ticket>" + "<gwip>" + Constants.getGateWayIP() + "</gwip><mac>"
+				+ getMacAddrWithFormat(":") + "</mac><ipv6></ipv6><host-name>Vivo</host-name>" + "</request>";
 	}
 }

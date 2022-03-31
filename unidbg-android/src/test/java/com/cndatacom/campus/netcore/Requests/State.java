@@ -1,5 +1,7 @@
 package com.cndatacom.campus.netcore.Requests;
 
+import java.lang.reflect.Field;
+
 public class State extends Request{
 
 	public static final String ACCESS_LIMIT = "105";
@@ -26,6 +28,14 @@ public class State extends Request{
     public static final String WAIT_CLIENT_AUTH = "300";
     public static final String WAIT_SERVER_AUTH = "301";
     
-    //TODO::finish this
+    
+    public static String check(String i) throws Exception {
+    	for(Field fi : State.class.getFields()) {
+    		if(((String)fi.get(null)).equals(i))
+    			return fi.getName();
+    	}
+    	
+		return null;
+    }
 
 }
