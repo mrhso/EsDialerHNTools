@@ -11,21 +11,37 @@ unidbg-android\src\test\java\com\anjuke\mobile\sign\eSufing<br>
 验证包结构可参考apk里面的东西 还有 https://github.com/claw6148/EsDialerGD
 <br><br>
 <br>
-run.jar 使用方式:<br>
-java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]<br>
-termux 安装:<br>
-  解压Build.zip到/sdcard
-  https://mirrors.tuna.tsinghua.edu.cn/help/termux/ 换源<br>
-  apt update<br>
-  pkg install proot-distro <br>
-  termux-setup-storage<br>
-  termux-wake-lock<br>
-  proot-distro install ubuntu<br>
-  proot-distro login ubuntu<br>
-  sudo apt update<br>
-  sudo apt install openjdk-11-jdk<br>
-  cd /sdcard<br>
-  java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]<br>
-  建议关闭doze mode<br>
+✅ Releases里面的 ```run.jar``` 使用方式:<br>
+```java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]```<br>
+💡 termux 安装:<br>
+  ```diff
+  1. 解压Build.zip到/sdcard
+  2. https://mirrors.tuna.tsinghua.edu.cn/help/termux/ 换源
+  #> apt update
+  #> pkg install proot-distro
+  #> termux-setup-storage
+  #> termux-wake-lock
+  #> proot-distro install ubuntu
+  > proot-distro login ubuntu
+  > sudo apt update
+  > sudo apt install openjdk-11-jdk
+  > cd /sdcard
+  > java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]
+  !下一次开termux从绿色部分开始执行
+  !原生 Ubuntu 直接从绿色下一行开始执行
+  建议关闭doze mode
   adb shell dumpsys deviceidle disable
   adb shell dumpsys deviceidle whitelist +com.termux
+  ```
+  <br>
+
+  保活bash:
+  ```bash
+  #!/bin/sh
+while true
+do
+  java -jar run.jar <ipv4> <账号> <密码> [wlanacip]
+  sleep 1
+  echo "restarting...."
+done
+  ```
