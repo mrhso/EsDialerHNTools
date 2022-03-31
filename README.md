@@ -12,4 +12,19 @@ unidbg-android\src\test\java\com\anjuke\mobile\sign\eSufing<br>
 <br><br>
 <br>
 run.jar 使用方式:<br>
-java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]
+java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]<br>
+termux 安装:<br>
+  https://mirrors.tuna.tsinghua.edu.cn/help/termux/ 换源<br>
+  apt update<br>
+  pkg install proot-distro <br>
+  termux-setup-storage<br>
+  termux-wake-lock<br>
+  proot-distro install ubuntu<br>
+  proot-distro login ubuntu<br>
+  sudo apt update<br>
+  sudo apt install openjdk-11-jdk<br>
+  cd /sdcard<br>
+  java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]<br>
+  建议关闭doze mode<br>
+  adb shell dumpsys deviceidle disable
+  adb shell dumpsys deviceidle whitelist +com.termux
