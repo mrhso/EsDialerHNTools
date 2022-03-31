@@ -22,11 +22,11 @@ unidbg-android\src\test\java\com\anjuke\mobile\sign\eSufing<br>
   #> termux-setup-storage
   #> termux-wake-lock
   #> proot-distro install ubuntu
-  > proot-distro login ubuntu
-  > sudo apt update
-  > sudo apt install openjdk-11-jdk
-  > cd /sdcard
-  > java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]
+  >  proot-distro login ubuntu
+  >  sudo apt update
+  >  sudo apt install openjdk-11-jdk
+  >  cd /sdcard
+  >  java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]
   !下一次开termux从绿色部分开始执行
   !原生 Ubuntu 直接从绿色下一行开始执行
   建议关闭doze mode
