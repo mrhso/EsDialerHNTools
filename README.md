@@ -9,3 +9,7 @@ unidbg-android\src\test\java\com\anjuke\mobile\sign\eSufing<br>
 请自己实现项目已经完成了80%了<br>
 立即可用版本就是这里面的apk ([下载](https://hub.fastgit.xyz/githuu5y5u/EsDialerGDTools/releases/download/1.0/_2.3.2075.21070101.apk)), 安装即用 保持进程活跃即可<br>
 验证包结构可参考apk里面的东西 还有 https://github.com/claw6148/EsDialerGD
+<br><br>
+<br>
+run.jar 使用方式:<br>
+java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]
