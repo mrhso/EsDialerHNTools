@@ -35,7 +35,7 @@ unidbg-android\src\test\java\com\anjuke\mobile\sign\eSufing<br>
   ```
   <br>
 
-  保活bash:
+  保活shell脚本:
   ```bash
   #!/bin/sh
 while true
