@@ -14,6 +14,7 @@ unidbg-android\src\test\java\com\anjuke\mobile\sign\eSufing<br>
 run.jar 使用方式:<br>
 java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]<br>
 termux 安装:<br>
+  解压Build.zip到/sdcard
   https://mirrors.tuna.tsinghua.edu.cn/help/termux/ 换源<br>
   apt update<br>
   pkg install proot-distro <br>
