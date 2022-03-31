@@ -234,7 +234,7 @@ public class Main {
 					+ " PassWord -> " + Constants.getPassword() + " wlanacip -> " + Constants.getWlanacip()
 					+ " Gateway -> " + Constants.getGateWayIP());
 		} else if (args.length == 0 && Constants.getIPV4().isEmpty()) {
-			log.accept("ERROR ! not enough arguments. usage -> IPV4 Account Password Wlanacip GateWayIP");
+			log.accept("ERROR ! not enough arguments. usage -> IPV4 Account Password Wlanacip GateWayIP(Optional)");
 			throw new Exception("NOT ENOUGH ARGUMENTS");
 		}
 
