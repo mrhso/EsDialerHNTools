@@ -1,5 +1,6 @@
 # EsDialerGDTools
-广东天翼校园ZSM客户端通道(非网页) 工具包
+广东天翼校园ZSM客户端通道(非网页) 工具包<br>
+本项目仅供学习研究, 使用请自己负责
 
 unidbg-android\src\test\java\KO\eSufing<br>
 基于 [unidbg](https://github.com/zhkl0228/unidbg) 的libdaproxy.so模拟<br>
