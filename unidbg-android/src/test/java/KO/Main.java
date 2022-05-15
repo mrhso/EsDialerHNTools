@@ -204,11 +204,11 @@
  * 
  */
 
-
 package KO;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
@@ -221,11 +221,13 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 
+		System.out.print(Color.ANSI_RESET);
+		
 		if (args.length >= 4) {
-			Constants.setIPV4(args[0].trim());
-			Constants.setAccount(args[1].trim());
-			Constants.setPassword(args[2].trim());
-			Constants.setWlanacip(args[3].trim());
+			Constants.setIPV4(Objects.requireNonNull(args[0].trim(), "IPV4 is null"));
+			Constants.setAccount(Objects.requireNonNull(args[1].trim(), "Account is null"));
+			Constants.setPassword(Objects.requireNonNull(args[2].trim(), "Password is null"));
+			Constants.setWlanacip(Objects.requireNonNull(args[3].trim(), "wlanacip is null"));
 
 			if (args.length >= 5)
 				Constants.setGateWayIP(args[4].trim());

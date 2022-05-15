@@ -34,6 +34,8 @@ import KO.utils.Tools;
 
 public class eSufing {
 
+	// Single Thread. so we don't need to care about the synchronization seriously (At least for now).
+
 	// temp VALUE for keep action.
 	private static Result keepResult;
 	// temp VALUE for keep action.
@@ -55,8 +57,16 @@ public class eSufing {
 		LoginThreadStage = stage;
 	};
 
+	private static Thread StateCheckThread;
+
+	private static long keepMills;
+
 	@SuppressWarnings("unused")
 	static void executeSingleSession() {
+		
+		
+		while(StateCheckThread != null && StateCheckThread.isAlive())
+			StateCheckThread.interrupt();
 
 		PlatformAccess info;
 		ACCESS = new AndroidAccess();
@@ -79,7 +89,7 @@ public class eSufing {
 
 			step2: {
 
-				log.accept("AlgoID: " + info.getAlgoID() + " ServerIp: " + Constants.getServerlist().get(0));
+				log.accept("Session: " + info.getZSMSession() + " ServerIp: " + Constants.getServerlist().get(0));
 
 				// Obtain Ticket
 				Result ObtainTicket = Tools.doPost(Constants.Urls.getTicketURL(),
@@ -108,11 +118,11 @@ public class eSufing {
 						info.encrypt(new Auth(ticketResult).doAction()), info);
 				String authResult = info.decrypt(new String(doAuth.result));
 
+				log.accept("Auth -> " + Pattern.compile("\t|\r|\n").matcher(authResult).replaceAll("")
+						+ "\n LastError -> " + doAuth.Error_Code);
+
 				if (!doAuth.Error_Code.equals("SUCCESS"))
-					throw new Exception("Failed to do Authentication");
-
-				log.accept("Auth -> " + Pattern.compile("\t|\r|\n").matcher(authResult).replaceAll("") + "\n LastError -> " + doAuth.Error_Code);
-
+					throw new Exception("Failed to do Authentication " + new Auth(ticketResult).doAction());
 			}
 
 			setState.accept(4);
@@ -121,10 +131,12 @@ public class eSufing {
 
 			final String ticketResult_final = ticketResult;
 
+			StateCheckThread = getStateCheckThread(info, ticketResult_final);
+
 			// Keep Phase
 			do {
 				keepResult = null;
-				
+
 				Thread temp = new Thread(() -> {
 					try {
 						keepResult = Tools.doPost(Constants.Urls.getKeepURL(),
@@ -152,8 +164,13 @@ public class eSufing {
 					temp.interrupt();
 				}
 
-				if (keepResult == null)
+				if (keepResult == null) {
+					if (StateCheckThread != null && StateCheckThread.isAlive()) {
+						StateCheckThread.interrupt();
+					}
+					
 					throw new Exception();
+				}
 
 				log.accept(Color.ANSI_GREEN + "Keep -> " + info.decrypt(new String(keepResult.result)) + " LastError: "
 						+ keepResult.Error_Code);
@@ -164,60 +181,35 @@ public class eSufing {
 				if (!WatchDogThread.isAlive())
 					WatchDogThread.start();
 
-				if (!keepResult.Error_Code.equals("SUCCESS"))
+				if (!keepResult.Error_Code.equals("SUCCESS")) {
+					if (StateCheckThread.isAlive()) {
+						StateCheckThread.interrupt();
+					}
+					
 					throw new Exception("Failed to Keep Online");
-
-				checkState: {
-
-					temp = new Thread(() -> {
-						try {
-
-							Result doState = Tools
-									.doPost(Constants.Urls.getStateURL(),
-											info.encrypt("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-													+ "<request><ticket>" + ticketResult_final + "</ticket></request>"),
-											info);
-							String CurrentState = info.decrypt(new String(doState.result));
-
-							System.out.println(Color.ANSI_YELLOW + "State -> " + CurrentState + " LastError: "
-									+ doState.Error_Code);
-							System.out.println(Color.ANSI_RESET);
-
-							if (doState.Error_Code.equals("WAIT_CLIENT_AUTH")
-									|| doState.Error_Code.equals("WAIT_SERVER_AUTH"))
-								LoginThread.interrupt();
-
-						} catch (Exception c) {
-							c.printStackTrace();
-						}
-					});
-
-					temp.start();
-					try {
-						temp.join(6 * 1000L);
-					} catch (InterruptedException ignored) {
-						log.accept("keep -> state check -> time out ... break");
-						try {
-							temp.interrupt();
-						} catch (Exception c) {
-							c.printStackTrace();
-						}
-
-					}
-
-					if (temp.isAlive()) {
-						temp.interrupt();
-					}
-
 				}
-
+				
+				if (StateCheckThread != null && !StateCheckThread.isAlive()) {
+					StateCheckThread.start();
+				}
+				
 				// keep per 30 second (-1s)
+				keepMills = 1 * 29 + ThreadLocalRandom.current().nextInt(0, 2);
+
+				 
 				try {
-					Thread.sleep(1 * 29 * 1000L + ThreadLocalRandom.current().nextInt(1000, 20000));
+					while(--keepMills > 0)
+						Thread.sleep(1000L);
 				} catch (InterruptedException ignored) {
+					
 				}
+				
 
 			} while (ticketExpireCount++ < 3 + Math.random() * 1);
+
+			if(StateCheckThread != null && StateCheckThread.isAlive()) {
+				StateCheckThread.interrupt();
+			}
 
 		} catch (Throwable c) {
 			c.printStackTrace();
@@ -229,9 +221,73 @@ public class eSufing {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			if(StateCheckThread != null && StateCheckThread.isAlive())
+				StateCheckThread.interrupt();
 
 			LoginThreadStage = 0;
 		}
+	}
+
+	private static Thread getStateCheckThread(PlatformAccess info, String ticket) {
+		return new Thread(() -> {
+
+			try {
+			while (LoginThread.isAlive() && LoginThreadStage >= 4) {
+				
+				
+					if(keepMills <= 5)
+						continue;
+
+					Result doState = Tools.doPost(Constants.Urls.getStateURL(),
+							info.encrypt("<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<request><ticket>" + ticket
+									+ "</ticket></request>"),
+							info);
+					String CurrentState = info.decrypt(new String(doState.result));
+
+					System.out.print(
+							Color.ANSI_YELLOW + "[KeepAlive] State -> " + CurrentState + " LastError: " + doState.Error_Code);
+					
+
+					if (doState.Error_Code.equals("WAIT_CLIENT_AUTH") || doState.Error_Code.equals("WAIT_SERVER_AUTH")) {
+						System.out.println(" do relog");
+						LoginThread.interrupt();
+						break;
+					}
+					
+					System.out.println(" fine");
+					
+					System.out.print(Color.ANSI_RESET);
+					
+					
+					Thread.sleep(500);
+					
+					
+					int count = 1; 
+					System.out.print(String.format("\033[%dA",count)); // Move up
+					System.out.print("\033[2K"); // Erase line content
+
+					
+					Thread.sleep(250);
+					
+					System.out.println(
+							Color.ANSI_YELLOW + " .......");
+					System.out.print(Color.ANSI_RESET);
+					
+					Thread.sleep(250);
+					
+					
+					System.out.print(String.format("\033[%dA",count)); // Move up
+					System.out.print("\033[2K"); // Erase line content
+
+					
+					
+
+			}
+			
+			}catch(Throwable cx) {cx.printStackTrace();}
+		});
+
 	}
 
 }

@@ -1,16 +1,21 @@
 package KO.platform.android;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.scijava.nativelib.NativeLibraryUtil;
+
 import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.arm.HookStatus;
+import com.github.unidbg.arm.backend.DynarmicFactory;
 import com.github.unidbg.arm.backend.KvmFactory;
+import com.github.unidbg.arm.backend.Unicorn2Factory;
 import com.github.unidbg.hook.HookContext;
 import com.github.unidbg.hook.ReplaceCallback;
 import com.github.unidbg.hook.hookzz.HookZz;
@@ -29,6 +34,7 @@ import com.github.unidbg.memory.Memory;
 import com.github.unidbg.memory.MemoryBlock;
 import com.github.unidbg.virtualmodule.android.AndroidModule;
 
+import KO.utils.Color;
 import unicorn.ArmConst;
 
 public class AndroidMock {
@@ -165,7 +171,7 @@ public class AndroidMock {
 		this.memory = memory;
 	}
 
-	private final AndroidEmulator emulator;
+	private AndroidEmulator emulator;
 
 	private final DvmClass API;
 
@@ -200,7 +206,7 @@ public class AndroidMock {
 
 	public AndroidMock() {
 		
-		log.accept("Booting Unidbg...");
+		log.accept(Color.ANSI_RESET + "Booting Unidbg...");
 		
 		AndroidEmulatorBuilder builder = new AndroidEmulatorBuilder(false) {
 			public AndroidEmulator build() {
@@ -211,9 +217,13 @@ public class AndroidMock {
 
 		cache5.clear();
 
-		emulator = builder
-//				.addBackendFactory(new HypervisorFactory(true))
-				.addBackendFactory(new KvmFactory(true)).setProcessName("com.cndatacom.campus.cdccportalgd").build();
+		
+		log.accept("using Unicorn2Factory");
+
+    	emulator = builder
+    				.addBackendFactory(new Unicorn2Factory(false))
+    				.setProcessName("com.cndatacom.campus.cdccportalgd").build();
+        
 
 		memory = emulator.getMemory();
 		memory.setLibraryResolver(new AndroidResolver(23));
@@ -278,7 +288,7 @@ public class AndroidMock {
 				// yyyy-mm-dd 00:00:00
 				Filter.forEach(key -> {
 					if (arg2.indexOf(key) == 0) {
-
+						
 						if (!cache5.containsKey(key)) {
 							MemoryBlock fakeInputBlock = emulator.getMemory().malloc(key.length(), true);
 
