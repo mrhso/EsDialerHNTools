@@ -221,7 +221,7 @@ public class AndroidMock {
 		log.accept("using Unicorn2Factory");
 
     	emulator = builder
-    				.addBackendFactory(new Unicorn2Factory(false))
+    				.addBackendFactory(new Unicorn2Factory(true))
     				.setProcessName("com.cndatacom.campus.cdccportalgd").build();
         
 
