@@ -10,7 +10,8 @@ unidbg-android\src\test\java\KO\eSufing<br>
 <br><br>
 <br>
 ✅ ([Releases](https://hub.fastgit.xyz/githuu5y5u/EsDialerGDTools/releases/)) 里面 Build.zip 的 ```run.jar``` 使用方式:<br>
-```java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]```<br>
+```java -jar run.jar <ipv4> <账号> <密码> [wlanacip] [Gateway]```<br><br>
+(wlanacip 是 弹出网页验证界面连接后面的参数 -> xxxx/qs/index.jsp?wlanacip=<> , GateWay 是 DHCP 网关IP)<br><br>
 💡 termux 安装:<br>
   ```diff
   1. 解压Build.zip到/sdcard
