@@ -6,8 +6,8 @@
     docker pull unknowndockerer/esuf:latest
     docker run -e SETTINGS='<ipv4> <账号> <密码> [wlanacip] [Gateway]' --name esuf -d unknowndockerer/esuf:latest      
 ```
-<br>
-unidbg-android\src\test\java\KO\eSufing<br>
+
+<br>unidbg-android\src\test\java\KO\eSufing<br>
 基于 [unidbg](https://github.com/zhkl0228/unidbg) 的libdaproxy.so模拟<br>
 不能用请自己抓包修改编译, unidbg-android 需要 JDK8 剩下的都是 JDK7(否则无法正常Hook)<br>
 立即可用版本就是这里面的apk ([下载](https://hub.fastgit.xyz/githuu5y5u/EsDialerGDTools/releases/download/1.0/_2.3.2075.21070101.apk)), 安装即用 保持进程活跃即可<br>
