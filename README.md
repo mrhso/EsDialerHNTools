@@ -1,7 +1,7 @@
 # EsDialerGDTools
 广东天翼校园ZSM客户端通道(非网页) 工具包<br>
 本项目仅供学习研究, 使用请自己负责<br><br>
-
+💡 docker 安装:<br>
 ```
     docker pull unknowndockerer/esuf:latest
     docker run -e SETTINGS='<ipv4> <账号> <密码> [wlanacip] [Gateway]' --name esuf -d unknowndockerer/esuf:latest      
