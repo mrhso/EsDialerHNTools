@@ -63,9 +63,8 @@ public class eSufing {
 
 	@SuppressWarnings("unused")
 	static void executeSingleSession() {
-		
-		
-		while(StateCheckThread != null && StateCheckThread.isAlive())
+
+		while (StateCheckThread != null && StateCheckThread.isAlive())
 			StateCheckThread.interrupt();
 
 		PlatformAccess info;
@@ -168,7 +167,7 @@ public class eSufing {
 					if (StateCheckThread != null && StateCheckThread.isAlive()) {
 						StateCheckThread.interrupt();
 					}
-					
+
 					throw new Exception();
 				}
 
@@ -185,29 +184,27 @@ public class eSufing {
 					if (StateCheckThread.isAlive()) {
 						StateCheckThread.interrupt();
 					}
-					
+
 					throw new Exception("Failed to Keep Online");
 				}
-				
+
 				if (StateCheckThread != null && !StateCheckThread.isAlive()) {
 					StateCheckThread.start();
 				}
-				
+
 				// keep per 30 second (-1s)
 				keepMills = 1 * 29 + ThreadLocalRandom.current().nextInt(0, 2);
 
-				 
 				try {
-					while(--keepMills > 0)
+					while (--keepMills > 0)
 						Thread.sleep(1000L);
 				} catch (InterruptedException ignored) {
-					
+
 				}
-				
 
 			} while (ticketExpireCount++ < 3 + Math.random() * 1);
 
-			if(StateCheckThread != null && StateCheckThread.isAlive()) {
+			if (StateCheckThread != null && StateCheckThread.isAlive()) {
 				StateCheckThread.interrupt();
 			}
 
@@ -221,8 +218,8 @@ public class eSufing {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			if(StateCheckThread != null && StateCheckThread.isAlive())
+
+			if (StateCheckThread != null && StateCheckThread.isAlive())
 				StateCheckThread.interrupt();
 
 			LoginThreadStage = 0;
@@ -230,62 +227,84 @@ public class eSufing {
 	}
 
 	private static Thread getStateCheckThread(PlatformAccess info, String ticket) {
-		return new Thread(() -> {
+		return new Thread(new Runnable() {
 
-			try {
-			while (LoginThread.isAlive() && LoginThreadStage >= 4) {
-				
-				
-					if(keepMills <= 5)
-						continue;
+			Result doState;
+			String CurrentState;
 
-					Result doState = Tools.doPost(Constants.Urls.getStateURL(),
-							info.encrypt("<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<request><ticket>" + ticket
-									+ "</ticket></request>"),
-							info);
-					String CurrentState = info.decrypt(new String(doState.result));
+			@Override
+			public void run() {
+				try {
+					while (LoginThread.isAlive() && LoginThreadStage >= 4) {
 
-					System.out.print(
-							Color.ANSI_YELLOW + "[KeepAlive] State -> " + CurrentState + " LastError: " + doState.Error_Code);
-					
+						if (keepMills <= 5)
+							continue;
 
-					if (doState.Error_Code.equals("WAIT_CLIENT_AUTH") || doState.Error_Code.equals("WAIT_SERVER_AUTH")) {
-						System.out.println(" do relog");
-						LoginThread.interrupt();
-						break;
+						Thread temp = new Thread(() -> {
+							try {
+								doState = Tools.doPost(Constants.Urls.getStateURL(),
+										info.encrypt("<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<request><ticket>"
+												+ ticket + "</ticket></request>"),
+										info);
+
+								CurrentState = info.decrypt(new String(doState.result));
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+						});
+
+						temp.start();
+
+						try {
+							temp.join(2 * 1000L);
+						} catch (InterruptedException ignored) {
+							log.accept("keep -> time out ... breaks");
+							try {
+								temp.interrupt();
+							} catch (Exception c) {
+								c.printStackTrace();
+							}
+
+							continue;
+						}
+
+						System.out.print(Color.ANSI_YELLOW + "[KeepAlive] State -> " + CurrentState + " LastError: "
+								+ doState.Error_Code);
+
+						if (doState.Error_Code.equals("WAIT_CLIENT_AUTH")
+								|| doState.Error_Code.equals("WAIT_SERVER_AUTH")) {
+							System.out.println(" do relog");
+							LoginThread.interrupt();
+							break;
+						}
+
+						System.out.println(" fine");
+
+						System.out.print(Color.ANSI_RESET);
+
+						Thread.sleep(500);
+
+						int count = 1;
+						System.out.print(String.format("\033[%dA", count)); // Move up
+						System.out.print("\033[2K"); // Erase line content
+
+						Thread.sleep(250);
+
+						System.out.println(Color.ANSI_YELLOW + " .......");
+						System.out.print(Color.ANSI_RESET);
+
+						Thread.sleep(250);
+
+						System.out.print(String.format("\033[%dA", count)); // Move up
+						System.out.print("\033[2K"); // Erase line content
+
 					}
-					
-					System.out.println(" fine");
-					
-					System.out.print(Color.ANSI_RESET);
-					
-					
-					Thread.sleep(500);
-					
-					
-					int count = 1; 
-					System.out.print(String.format("\033[%dA",count)); // Move up
-					System.out.print("\033[2K"); // Erase line content
 
-					
-					Thread.sleep(250);
-					
-					System.out.println(
-							Color.ANSI_YELLOW + " .......");
-					System.out.print(Color.ANSI_RESET);
-					
-					Thread.sleep(250);
-					
-					
-					System.out.print(String.format("\033[%dA",count)); // Move up
-					System.out.print("\033[2K"); // Erase line content
-
-					
-					
-
+				} catch (Throwable cx) {
+					cx.printStackTrace();
+				}
 			}
-			
-			}catch(Throwable cx) {cx.printStackTrace();}
 		});
 
 	}
