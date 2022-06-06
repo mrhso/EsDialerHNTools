@@ -29,8 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import unicorn.ArmConst;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -210,46 +208,21 @@ public class ArmLD extends Dlfcn {
                         public long handle(Emulator<?> emulator) {
                             RegisterContext context = emulator.getContext();
                             Pointer fileNamePointer = context.getPointerArg(0);
-                            String filename = fileNamePointer == null ? emulator.getMemory().findModuleByAddress(context.getLRPointer().peer).name : fileNamePointer.getString(0);
                             int flags = context.getIntArg(1);
-                            
-                        //    if (log.isDebugEnabled()) {
-                                System.out.println("dlopen filename=" + filename + ", flags=" + flags + ", LR=" + context.getLRPointer() + " " 
-                        + emulator.getMemory().findModuleByAddress(context.getLRPointer().peer).base + "  " + emulator.getMemory().findModuleByAddress(context.getLRPointer().peer).size);
-                       //     }
-                                
-//                                if( emulator.getMemory().findModuleByAddress(context.getLRPointer().peer).size == 36864) {
-//                                  try {
-//									FileOutputStream fp = new FileOutputStream(emulator.getMemory().findModuleByAddress(context.getLRPointer().peer).name + "_extra", false);
-//									
-//									fp.write(emulator.getBackend().mem_read(0x400aa000, 40960 + 8192));
-//									fp.flush();
-//									
-//									fp.close();
-//									
-//									fp = new FileOutputStream(emulator.getMemory().findModuleByAddress(context.getLRPointer().peer).name + "_part2", false);
-//									
-//									fp.write(emulator.getBackend().mem_read(0x400b4000, 8192));
-//									fp.flush();
-//									
-//									fp.close();
-//									
-//									fp = new FileOutputStream(emulator.getMemory().findModuleByAddress(context.getLRPointer().peer).name + "_full", false);
-//									
-//									fp.write(emulator.getBackend().mem_read(1075052544, 36864));
-//									fp.flush();
-//									
-//									fp.close();
-//									
-//								} catch (Exception e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								}
-//                                  
-//                                  
-//                                  
-//                                }
-                                
+
+                            String filename;
+                            if (fileNamePointer == null) {
+                                Module module = emulator.getMemory().findModuleByAddress(context.getLR());
+                                if (module == null) {
+                                    throw new UnsupportedOperationException();
+                                }
+                                filename = module.name;
+                            } else {
+                                filename = fileNamePointer.getString(0);
+                            }
+                            if (log.isDebugEnabled()) {
+                                log.debug("dlopen filename=" + filename + ", flags=" + flags + ", LR=" + context.getLRPointer());
+                            }
                             return dlopen(emulator.getMemory(), filename, emulator);
                         }
                     }).peer;

@@ -18,9 +18,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.nio.BufferOverflowException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -190,49 +188,7 @@ public class UdpSocket extends SocketIO implements FileIO {
             return getIFaceName(emulator, argp);
         }
 
-        log.info("test");
-        log.debug("SIO received");
-        if (request == SIOCGIFADDR) {
-            return getIFaceAddress(emulator, request, argp);
-        }
-
         return super.ioctl(emulator, request, argp);
-    }
-    
-    private int getIFaceAddress(Emulator<?> emulator, long request, long argp) {
-        try {
-            List<NetworkIF> list = getNetworkIFs(emulator);
-            Pointer ifcu_req = UnidbgPointer.pointer(emulator, argp);
-            IFReq ifReq = IFReq.createIFReq(emulator, ifcu_req);
-
-            Pointer pointer = Objects.requireNonNull(ifcu_req);
-            
-            
-            System.out.println(new String(ifReq.ifrn_name, Charset.forName("utf-8")));
-        	
-            
-
-            	
-                SockAddr sockAddr = new SockAddr(ifReq.getAddrPointer());
-
-                
-                
-                sockAddr.sin_family = AF_INET;
-                sockAddr.sin_port = 0;
-                
-                try {
-					sockAddr.sin_addr = Arrays.copyOf(InetAddress.getByName("192.168.1.1").getAddress(), IPV4_ADDR_LEN - 4);
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
-                
-                sockAddr.pack();
-            
-
-            return 0;
-        } catch (SocketException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     private int getIFaceList(Emulator<?> emulator, long argp) {

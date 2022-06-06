@@ -1,5 +1,6 @@
 package com.github.unidbg.linux.android.dvm;
 
+import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.linux.android.ElfLibraryFile;
@@ -60,7 +61,7 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         this.jni = jni;
     }
 
-    private final Emulator<?> emulator;
+    private final AndroidEmulator emulator;
     private final Apk apk;
 
     final Set<String> notFoundClassSet = new HashSet<>();
@@ -70,7 +71,7 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         notFoundClassSet.add(className);
     }
 
-    BaseVM(Emulator<?> emulator, File apkFile) {
+    BaseVM(AndroidEmulator emulator, File apkFile) {
         this.emulator = emulator;
         this.apk = apkFile == null ? null : ApkFactory.createApk(apkFile);
     }
@@ -101,6 +102,7 @@ public abstract class BaseVM implements VM, DvmClassFactory {
 
     @Override
     public final DvmClass resolveClass(String className, DvmClass... interfaceClasses) {
+        className = className.replace('.', '/');
         int hash = Objects.hash(className);
         DvmClass dvmClass = classMap.get(hash);
         DvmClass superClass = null;
@@ -282,6 +284,9 @@ public abstract class BaseVM implements VM, DvmClassFactory {
 
     @Override
     public byte[] unzip(String path) {
+        if (path.length() > 1 && path.charAt(0) == '/') {
+            path = path.substring(1);
+        }
         return apk == null ? null : apk.getFileData(path);
     }
 

@@ -1,7 +1,5 @@
 package com.github.unidbg.linux.android.dvm;
 
-import java.io.File;
-
 public abstract class JniFunction implements Jni {
 
     @Override
@@ -108,16 +106,11 @@ public abstract class JniFunction implements Jni {
     public DvmObject<?> callStaticObjectMethod(BaseVM vm, DvmClass dvmClass, DvmMethod dvmMethod, VarArg varArg) {
         return callStaticObjectMethod(vm, dvmClass, dvmMethod.getSignature(), varArg);
     }
-    
-    @Override
-	public DvmObject<?> callObjectMethod(BaseVM vm, DvmObject<?> dvmObject, String signature, VarArg varArg) {
-		 throw new UnsupportedOperationException(signature);
-	}
 
-	@Override
-	public DvmObject<?> callStaticObjectMethod(BaseVM vm, DvmClass dvmClass, String signature, VarArg varArg) {
-		throw new UnsupportedOperationException(signature);
-	}
+    @Override
+    public DvmObject<?> callStaticObjectMethod(BaseVM vm, DvmClass dvmClass, String signature, VarArg varArg) {
+        throw new UnsupportedOperationException(signature);
+    }
 
     @Override
     public DvmObject<?> callStaticObjectMethodV(BaseVM vm, DvmClass dvmClass, DvmMethod dvmMethod, VaList vaList) {
@@ -259,10 +252,10 @@ public abstract class JniFunction implements Jni {
         return callObjectMethod(vm, dvmObject, dvmMethod.getSignature(), varArg);
     }
 
-//    @Override
-//    public DvmObject<?> callObjectMethod(BaseVM vm, DvmObject<?> dvmObject, String signature, VarArg varArg) {
-//        throw new UnsupportedOperationException(signature);
-//    }
+    @Override
+    public DvmObject<?> callObjectMethod(BaseVM vm, DvmObject<?> dvmObject, String signature, VarArg varArg) {
+        throw new UnsupportedOperationException(signature);
+    }
 
     @Override
     public long callLongMethod(BaseVM vm, DvmObject<?> dvmObject, DvmMethod dvmMethod, VarArg varArg) {

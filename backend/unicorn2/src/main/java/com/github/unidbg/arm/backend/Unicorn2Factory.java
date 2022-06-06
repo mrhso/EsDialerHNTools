@@ -10,6 +10,7 @@ public class Unicorn2Factory extends BackendFactory {
         try {
             org.scijava.nativelib.NativeLoader.loadLibrary("unicorn");
         } catch (IOException ignored) {
+        	ignored.printStackTrace();
         }
     }
 

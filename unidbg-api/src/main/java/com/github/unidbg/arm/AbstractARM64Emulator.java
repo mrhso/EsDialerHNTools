@@ -138,6 +138,11 @@ public abstract class AbstractARM64Emulator<T extends NewFileIO> extends Abstrac
             protected void searchClass(String keywords) {
                 AbstractARM64Emulator.this.searchClass(keywords);
             }
+
+            @Override
+            protected void dumpGPBProtobufMsg(String className) {
+                AbstractARM64Emulator.this.dumpGPBProtobufMsg(className);
+            }
         };
     }
 
@@ -179,9 +184,9 @@ public abstract class AbstractARM64Emulator<T extends NewFileIO> extends Abstrac
     }
 
     @Override
-    public Instruction[] printAssemble(PrintStream out, long address, int size, InstructionVisitor visitor) {
+    public Instruction[] printAssemble(PrintStream out, long address, int size, int maxLengthLibraryName, InstructionVisitor visitor) {
         Instruction[] insns = disassemble(address, size, 0);
-        printAssemble(out, insns, address, visitor);
+        printAssemble(out, insns, address, maxLengthLibraryName, visitor);
         return insns;
     }
 
@@ -199,7 +204,7 @@ public abstract class AbstractARM64Emulator<T extends NewFileIO> extends Abstrac
         return createArm64Disassembler().disasm(code, address, count);
     }
 
-    private void printAssemble(PrintStream out, Instruction[] insns, long address, InstructionVisitor visitor) {
+    private void printAssemble(PrintStream out, Instruction[] insns, long address, int maxLengthLibraryName, InstructionVisitor visitor) {
         StringBuilder builder = new StringBuilder();
         for (Instruction ins : insns) {
             if(visitor != null) {
@@ -207,7 +212,7 @@ public abstract class AbstractARM64Emulator<T extends NewFileIO> extends Abstrac
             }
             builder.append('\n');
             builder.append(dateFormat.format(new Date()));
-            builder.append(ARM.assembleDetail(this, ins, address, false));
+            builder.append(ARM.assembleDetail(this, ins, address, false, maxLengthLibraryName));
             if (visitor != null) {
                 visitor.visit(builder, ins);
             }

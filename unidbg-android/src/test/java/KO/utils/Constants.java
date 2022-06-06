@@ -3,16 +3,16 @@ package KO.utils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class Constants {
-	private static UUID currentClientID = UUID.randomUUID();
 
 	private static final List<?> serverList = Arrays
-			.asList(new String[] { "14.146.227.141:7001", "121.8.177.212:7001" });
+			.asList(new String[] { "14.146.227.141:7001", "121.8.177.212:7001" }); //index.cgi?wlanuserip ....
 
-	private static final String UserAgent = "CCTP/android8Huizhou_vpn/2075";// CCTP/Android8/2075
+	private static final String UserAgent = "CCTP/Android8/2075";// CCTP/Android8/2075 android8Huizhou_vpn
 
 	private static String Wlanacip = "";
 
@@ -25,36 +25,25 @@ public class Constants {
 	private static String Password = "";
 
 	public static class Urls {
-		public static URL getTicketURL() throws MalformedURLException {
-			return new URL("http://" + Constants.getServerlist().get(0) + "/ticket.cgi?wlanacip="
+		
+		static String KeepUrl;
+		
+		public static URL getTicketURL(String ser) throws MalformedURLException {
+			return new URL("http://" + ser + "/ticket.cgi?wlanacip="
 					+ Constants.getWlanacip() + "&wlanuserip=" + Constants.getIPV4());
 		}
 		
-		public static URL getAuthURL() throws MalformedURLException {
-			return new URL("http://" + Constants.getServerlist().get(0) + "/auth.cgi");
+		public static URL getAuthURL(String ser) throws MalformedURLException {
+			return new URL("http://" + ser + "/auth.cgi");
 		}
 		
-		public static URL getKeepURL() throws MalformedURLException {
-			return new URL("http://" + Constants.getServerlist().get(0) + "/keep.cgi");
+		public static URL getStateURL(String ser) throws MalformedURLException {
+			return new URL("http://" + ser + "/state.cgi");
 		}
 		
-		public static URL getStateURL() throws MalformedURLException {
-			return new URL("http://" + Constants.getServerlist().get(0) + "/state.cgi");
+		public static URL getTermURL(String ser) throws MalformedURLException {
+			return new URL("http://" + ser + "/term.cgi");
 		}
-	}
-
-	/**
-	 * @return the currentClientID
-	 */
-	public static final UUID getCurrentClientID() {
-		return currentClientID;
-	}
-
-	/**
-	 * @param currentClientID the currentClientID to set
-	 */
-	public static final void setCurrentClientID(UUID currentClientID) {
-		Constants.currentClientID = currentClientID;
 	}
 
 	/**

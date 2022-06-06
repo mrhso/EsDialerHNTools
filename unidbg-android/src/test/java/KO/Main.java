@@ -212,6 +212,7 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
+import KO.Thread.WatchThread;
 import KO.utils.Color;
 import KO.utils.Constants;
 
@@ -222,7 +223,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 
 		System.out.print(Color.ANSI_RESET);
-		
+
 		if (args.length >= 4) {
 			Constants.setIPV4(Objects.requireNonNull(args[0].trim(), "IPV4 is null"));
 			Constants.setAccount(Objects.requireNonNull(args[1].trim(), "Account is null"));
@@ -239,76 +240,63 @@ public class Main {
 			log.accept("ERROR ! not enough arguments. usage -> IPV4 Account Password Wlanacip GateWayIP(Optional)");
 			throw new Exception("NOT ENOUGH ARGUMENTS");
 		}
+		
+		//Wanna be MarsDaemon
 
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			try {
-				eSufing.ACCESS.destroy();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}));
+		Thread main2 = new Thread(() -> {
 
-		eSufing.WatchDogThread = new Thread(() -> {
-
-			log.accept(Color.ANSI_PURPLE + "[WatchDog Thread] Starting....");
-
-			while (true) {
+			do {
 
 				try {
-					if (eSufing.LoginThreadStage >= 1 && eSufing.LoginThreadStage < 4) {
-						if (System.currentTimeMillis() - eSufing.millToCheck > 16 * 1000) {
-							eSufing.LoginThread.interrupt();
-						}
 
-						if (System.currentTimeMillis() - eSufing.millToCheck > 26 * 1000) {
-							System.exit(110);
-						}
+					WorkThread main = new WorkThread((String) Constants.getServerlist().get(0));
+					main.start();
 
-						if (System.currentTimeMillis() - eSufing.millToCheck > 6 * 1000) {
-							log.accept(Color.ANSI_RED + "[WatchDog Thread] (WARNNING) Stage " + eSufing.LoginThreadStage
-									+ " takes " + (System.currentTimeMillis() - eSufing.millToCheck) + "ms");
-							log.accept(Color.ANSI_RESET);
-						}
-					}
+					WatchThread WatchThread = new WatchThread(main);
+					WatchThread.start();
 
-					Thread.sleep(200L);
-				} catch (InterruptedException c) {
-				} catch (Exception e) {
-					e.printStackTrace();
+					main.join();
+					System.gc();
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
-			}
-		}, "WatchDog-Thread");
 
-		eSufing.WatchDogThread.start();
+			} while (true);
 
-		while (true) {
+		});
 
-			try {
+		main2.start();
 
-				eSufing.LoginThread = new Thread(eSufing::executeSingleSession);
-				eSufing.LoginThread.start();
+		Thread main3 = new Thread(() -> {
+
+			do {
+
 				try {
-					eSufing.LoginThread.join();
-				} catch (InterruptedException ignored) {
-					Collections.shuffle(Constants.getServerlist(), ThreadLocalRandom.current());
 
-					eSufing.ACCESS.destroy();
+					WorkThread main = new WorkThread((String) Constants.getServerlist().get(1));
+					main.start();
+
+					WatchThread WatchThread = new WatchThread(main);
+					WatchThread.start();
+
+					main.join();
+					System.gc();
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
 
-				if (eSufing.LoginThread.isAlive()) {
-					log.accept("timeout");
-					eSufing.LoginThread.interrupt();
-				}
+			} while (true);
 
-				eSufing.LoginThreadStage = 0;
+		});
+		
+		Thread.sleep(5000L);
 
-				eSufing.ACCESS = null;
+		main3.start();
+		
+		main2.join();
+		main3.join();
 
-				System.gc();
-
-			} catch (Throwable c) {
-				c.printStackTrace();
-			}
-		}
 	}
 }

@@ -6,7 +6,7 @@ import KO.platform.android.AndroidAccess;
 
 public interface PlatformAccess {
 
-	AndroidAccess loadZSM() throws Exception;
+	AndroidAccess loadZSM(String ser, String clientID) throws Exception;
 
 	String decrypt(String in) throws Exception;
 

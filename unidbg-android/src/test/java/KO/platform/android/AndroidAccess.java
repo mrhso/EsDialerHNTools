@@ -2,8 +2,10 @@ package KO.platform.android;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 
 import com.github.unidbg.linux.android.dvm.DvmObject;
 
@@ -31,14 +33,15 @@ public class AndroidAccess implements PlatformAccess{
 	 * @return
 	 * @throws Exception
 	 */
-	public synchronized String decrypt(String in) throws Exception {
+	public String decrypt(String in) throws Exception {
 		DvmObject<?> r2 = mock.getAPI().callStaticJniMethodObject(mock.getEmulator(), "dec(J[B)[B", ZSMSession,
 				in.getBytes("UTF-8"));
 		return new String((byte[]) r2.getValue());
 	}
 
 	public void destroy() throws IOException {
-		mock.getEmulator().close();
+		if(mock.getEmulator().isRunning())
+			mock.getEmulator().close();
 
 		mock.clear();
 	}
@@ -52,7 +55,7 @@ public class AndroidAccess implements PlatformAccess{
 	 * @return
 	 * @throws Exception
 	 */
-	public synchronized String encrypt(String in) throws Exception {
+	public String encrypt(String in) throws Exception {
 		DvmObject<?> r = mock.getAPI().callStaticJniMethodObject(mock.getEmulator(), "enc(J[B)[B", ZSMSession,
 				in.getBytes("UTF-8"));
 		return new String((byte[]) r.getValue());
@@ -63,7 +66,7 @@ public class AndroidAccess implements PlatformAccess{
 	 * @param info
 	 * @throws Exception
 	 */
-	private synchronized void free() throws Exception {
+	private void free() throws Exception {
 		mock.getAPI().callStaticJniMethodObject(mock.getEmulator(), "free(J)V", ZSMSession);
 	}
 
@@ -81,7 +84,7 @@ public class AndroidAccess implements PlatformAccess{
 		return ZSMSession;
 	}
 
-	public synchronized long load(byte[] zsmBytes) throws Exception {
+	public long load(byte[] zsmBytes) throws Exception {
 		return mock.getAPI().callStaticJniMethodLong(mock.getEmulator(), "load([B)J", zsmBytes);
 	}
 
@@ -92,14 +95,14 @@ public class AndroidAccess implements PlatformAccess{
 	 * @throws Exception
 	 * 
 	 */
-	public synchronized AndroidAccess loadZSM() throws Exception {
+	public AndroidAccess loadZSM(String ser, String clientID) throws Exception {
 		try {
 
 			String Body = "tarce log algo auto compstr null value";
 
-			URL url = new URL("http://" + Constants.getServerlist().get(0) + "/ticket.cgi");
+			URL url = new URL("http://" + ser + "/ticket.cgi");
 
-			Result result = Tools.doPost(url, Body, null);
+			Result result = Tools.doPost(url, Body, null, clientID);
 			
 			byte[] zsmBytes = result.result;
 

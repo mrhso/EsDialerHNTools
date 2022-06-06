@@ -103,9 +103,13 @@ public abstract class AbstractEmulator<T extends NewFileIO> implements Emulator<
         this.pid = Integer.parseInt(pid) & 0x7fff;
 
         this.svcMemory = new ARMSvcMemory(svcBase, svcSize, this);
-        this.threadDispatcher = new UniThreadDispatcher(this);
+        this.threadDispatcher = createThreadDispatcher();
 
         this.backend.onInitialize();
+    }
+
+    protected ThreadDispatcher createThreadDispatcher() {
+        return new UniThreadDispatcher(this);
     }
 
     @Override
@@ -288,8 +292,7 @@ public abstract class AbstractEmulator<T extends NewFileIO> implements Emulator<
 
     @Override
     public TraceHook traceCode(long begin, long end, TraceCodeListener listener) {
-        AssemblyCodeDumper hook = new AssemblyCodeDumper(this);
-        hook.initialize(begin, end, listener);
+        AssemblyCodeDumper hook = new AssemblyCodeDumper(this, begin, end, listener);
         backend.hook_add_new(hook, begin, end, this);
         return hook;
     }
@@ -406,7 +409,7 @@ public abstract class AbstractEmulator<T extends NewFileIO> implements Emulator<
 
     private int handleEmuException(RuntimeException e, Pointer pointer, long start) {
         boolean enterDebug = log.isDebugEnabled();
-        if (enterDebug) {
+        if (enterDebug || !log.isWarnEnabled()) {
             e.printStackTrace();
             attach().debug();
         } else {
@@ -442,7 +445,7 @@ public abstract class AbstractEmulator<T extends NewFileIO> implements Emulator<
 
     protected abstract void closeInternal();
 
-    @Override
+    @Override 
     public Backend getBackend() {
         return backend;
     }
@@ -461,7 +464,7 @@ public abstract class AbstractEmulator<T extends NewFileIO> implements Emulator<
         context.put(key, value);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") 
     @Override
     public <V> V get(String key) {
         return (V) context.get(key);
@@ -475,6 +478,10 @@ public abstract class AbstractEmulator<T extends NewFileIO> implements Emulator<
 
     protected void searchClass(String keywords) {
         throw new UnsupportedOperationException("searchClass keywords=" + keywords);
+    }
+
+    protected void dumpGPBProtobufMsg(String className) {
+        throw new UnsupportedOperationException("dumpGPBProtobufMsg className=" + className);
     }
 
     @Override
