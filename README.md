@@ -4,6 +4,7 @@
 <br>unidbg-android\src\test\java\KO\eSufing<br>
 基于 [unidbg](https://github.com/zhkl0228/unidbg) 的libdaproxy.so模拟<br>
 不能用请自己抓包修改编译, unidbg-android 需要 JDK8 剩下的都是 JDK7(否则无法正常Hook)<br>
+由于本项目可能随时失效，故不提供文档<br>
 验证协议参考: https://github.com/claw6148/EsDialerGD
 <br><br>
 <br>
