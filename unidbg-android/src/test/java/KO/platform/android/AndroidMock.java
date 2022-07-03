@@ -316,135 +316,7 @@ public class AndroidMock {
 
 		dm.callJNI_OnLoad(emulator);
 
-//		
-//		 long sub_13558_address = dm.getModule().base+0x3c4c + 1;
-//	        HookZz hooks = HookZz.getInstance(emulator);
-//	        hooks.replace(sub_13558_address, new ReplaceCallback() {
-//	        	private int a = 1;
-//
-//				     	  UnidbgPointer outPointer = null;
-//	            @Override
-//	            public HookStatus onCall(Emulator<?> emulator, HookContext context, long originFunction) {
-//
-//	            	
-//	            	if(++a == 2) {
-//		                System.out.println(context.getIntArg(3) + "   ..." );
-//	            	}
-//	            		
-//	            	
-//
-////	   //         	 outPointer = context.getPointerArg(0);
-////	            	outPointer = context.getPointerArg(0);
-////	                System.out.println(a + ",初始 3ecc 入参arg2:" + (lengt >>> 2));
-////	                Inspector.inspect(outPointer.getByteArray(0, 88), "3ecc in");
-//	                
-//	                //-1073744704
-//
-//	     //           emulator.getBackend().reg_write(ArmConst.UC_ARM_REG_R0, -1073744704);
-//	                return HookStatus.RET(emulator,originFunction);
-//	            }
-//
-//	            @Override
-//	            public void postCall(Emulator<?> emulator, HookContext context) {
-//
-//	     //       	 Inspector.inspect(outPointer.getByteArray(0, 88), "3ecc out");
-//	    //            int rep = context.getIntArg(0);
-//	    //            System.out.println(rep);
-//	   //             System.out.println(",replace_sub_13558_arg 返回字符串结果:"+outPointer.getString(0));
-////	                super.postCall(emulator, context);
-//	            }
-//	        },true);
-//	        
-////	        
-////	        sub_13558_address = dm.getModule().base+0x3f08 + 1;
-////	        hooks = HookZz.getInstance(emulator);
-////	        hooks.replace(sub_13558_address, new ReplaceCallback() {
-////	        	private int a;
-////
-////				     	  UnidbgPointer outPointer = null;
-////	            @Override
-////	            public HookStatus onCall(Emulator<?> emulator, HookContext context, long originFunction) {
-////
-////	            	 outPointer = context.getPointerArg(0);
-////	                System.out.println(a++ + "初始 3f08 入参arg2:");
-////	                Inspector.inspect(outPointer.getByteArray(0, 88), "3f08");
-////	                
-////	                //-1073744704
-////
-////	       //         emulator.getBackend().reg_write(ArmConst.UC_ARM_REG_R0, -1073744704);
-////	                return HookStatus.RET(emulator,originFunction);
-////	            }
-////
-////	            @Override
-////	            public void postCall(Emulator<?> emulator, HookContext context) {
-////
-////
-////	     //           int rep = context.getIntArg(0);
-////	    //            System.out.println(rep);
-////	                System.out.println("3f08 返回字符串结果:");
-////	                
-////	                Inspector.inspect(outPointer.getByteArray(0, 88), "3f08 out");
-////	                
-//////	                super.postCall(emulator, context);
-////	            }
-////	        },true);
-////	        
-////	        
-//	        sub_13558_address = dm.getModule().base+0x2E80 + 1;
-//	        hooks = HookZz.getInstance(emulator);
-//	        hooks.replace(sub_13558_address, new ReplaceCallback() {
-//	        	
-//				     	  
-//	            @Override
-//	            public HookStatus onCall(Emulator<?> emulator, HookContext context, long originFunction) {
-//
-//	            	 ;
-//	            	 int len = context.getPointerArg(3).getInt(0);
-//	      //      	 lengt = context.getIntArg(3);
-//	                System.out.println(lengt + "初始 3c4c 入参arg2:");
-//	                writeByte(context.getPointerArg(4).getByteArray(0, len));
-//	                
-//	                //-1073744704
-//
-//	       //         emulator.getBackend().reg_write(ArmConst.UC_ARM_REG_R0, -1073744704);
-//	                return HookStatus.RET(emulator,originFunction);
-//	            }
-//
-//	            @Override
-//	            public void postCall(Emulator<?> emulator, HookContext context) {
-//
-//
-//	     //           int rep = context.getIntArg(0);
-//	    //            System.out.println(rep);
-//	                System.out.println("3c4c 返回字符串结果:");
-//	                
-//	 //               Inspector.inspect(outPoi.getByteArray(0, lengt), "3c4c out");
-//	                
-////	                super.postCall(emulator, context);
-//	            }
-//	        },true);
-//
-//	        
-//
-////			MemoryBlock initial_msg = emulator.getMemory().malloc(4, false);
-////			UnidbgPointer initial_msg_ptr = initial_msg.getPointer();
-////	//
-//////			// 将参数1写入 -1073744132
-////			initial_msg_ptr.write(new byte[] {0x0,0x0, 0x0 , 0});
-////
-////			UnidbgPointer outPutStream = memory.allocateStack(4);
-////			
-////			outPutStream.write(new byte[] {0x1,0x1, 0x1 , 0});
-////
-////			System.out.println(initial_msg_ptr.getInt(0));
-////			
-////			
-////			emulator.getBackend().reg_write(ArmConst.UC_ARM_REG_R0, initial_msg_ptr.peer);
-////			
-////			Number ret = dm.getModule().callFunction(emulator, 0x3ECC + 1, outPutStream);
-////			System.out.println(ret.intValue());
-////			
-////			System.out.println(initial_msg_ptr.getInt(0));
+
 		API = vm.resolveClass("com/cndatacom/campus/netcore/DaMod");
 	}
 	
@@ -456,13 +328,10 @@ public class AndroidMock {
  
             // Initialize a pointer in file
             // using OutputStream
-            OutputStream os = new FileOutputStream("outx", false);
+            OutputStream os = new FileOutputStream("dump_", false);
  
             // Starting writing the bytes in it
             os.write(bytes);
- 
-            // Display message onconsole for successful
-            // execution
 
  
             // Close the file connections
