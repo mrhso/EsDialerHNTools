@@ -206,10 +206,7 @@
 
 package KO;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 import KO.Thread.WatchThread;
@@ -266,7 +263,7 @@ public class Main {
 
 		});
 
-		main2.start();
+	
 
 		Thread main3 = new Thread(() -> {
 
@@ -291,11 +288,12 @@ public class Main {
 
 		});
 		
-		Thread.sleep(5000L);
+		if(Math.random() > 0.5){
+            main2.start();
+            main2.join();
+		}
 
 		main3.start();
-		
-		main2.join();
 		main3.join();
 
 	}
