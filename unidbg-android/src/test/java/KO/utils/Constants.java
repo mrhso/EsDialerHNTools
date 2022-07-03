@@ -12,7 +12,7 @@ public class Constants {
 	private static final List<?> serverList = Arrays
 			.asList(new String[] { "14.146.227.141:7001", "121.8.177.212:7001" }); //index.cgi?wlanuserip ....
 
-	private static final String UserAgent = "CCTP/Android8/2075";// CCTP/Android8/2075 android8Huizhou_vpn
+	private static final String UserAgent = "CCTP/android8Huizhou_vpn/2075";// CCTP/Android8/2075 android8Huizhou_vpn
 
 	private static String Wlanacip = "";
 
