@@ -14,10 +14,10 @@ public class Ticket extends Request {
 	@Override
 	public String doAction() {
 		return HEAD + "<request><user-agent>" + Constants.getUseragent() + "</user-agent><client-id>"
-				+ clientID + "</client-id><local-time>" + getTime() + "</local-time><ipv4>"
-				+ Constants.getIPV4() + "</ipv4><gwip>" + Constants.getGateWayIP() + "</gwip><mac>" + getMacAddrWithUUID(clientID)
-				+ "</mac><ipv6>null</ipv6><sysinfo><sysname>Linux</sysname><ifname>wlan0," + Constants.getIPV4()
-				+ "</ifname></sysinfo><ostag>Linux</ostag><host-name>Honor" + clientID.substring(4, 8) + "</host-name></request>";
+				+ clientID + "</client-id><local-time>" + getTime() + "</local-time><host-name>OPPO R11</host-name><ipv4>"
+				+ Constants.getIPV4() + "</ipv4><ipv6></ipv6><mac>" + Constants.getMAC() + "</mac><ostag>OPPO R11</ostag><gwip>" + Constants.getGateWayIP()
+				+ "</gwip><sysinfo><sysname>Linux</sysname><machine>armv8l</machine><ifname>wlan0"
+				+ "</ifname><gsm.network.type>LTE,Unknown</gsm.network.type><ro.build.version.sdk>27</ro.build.version.sdk></sysinfo></request>";
 	}
 
 }

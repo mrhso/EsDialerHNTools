@@ -6,15 +6,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class Constants {
 
 	private static final List<?> serverList = Arrays
-			.asList(new String[] { "14.146.227.141:7001", "121.8.177.212:7001" }); //index.cgi?wlanuserip ....
+			.asList(new String[] { "218.77.121.110" }); //index.cgi?wlanuserip ....
 
-	private static final String UserAgent = "CCTP/android8Huizhou_vpn/2075";// CCTP/Android8/2075 android8Huizhou_vpn
+	private static final String UserAgent = "CCTP/Android4_vpn/2020";// CCTP/Android8/2075 android8Huizhou_vpn
 
-	private static String Wlanacip = "";
+	private static String MAC = "";
 
 	private static String IPV4 = ""; // Current IPV4 (wlanuserip)
 
@@ -29,8 +30,8 @@ public class Constants {
 		static String KeepUrl;
 		
 		public static URL getTicketURL(String ser) throws MalformedURLException {
-			return new URL("http://" + ser + "/ticket.cgi?wlanacip="
-					+ Constants.getWlanacip() + "&wlanuserip=" + Constants.getIPV4());
+			return new URL("http://" + ser + "/ticket.cgi?wlanuserip="
+					+ Constants.getIPV4() + "&mscgip=218.75.255.6&wlanusermac=" + Pattern.compile(":").matcher(Constants.getMAC()).replaceAll("-"));
 		}
 		
 		public static URL getAuthURL(String ser) throws MalformedURLException {
@@ -47,17 +48,17 @@ public class Constants {
 	}
 
 	/**
-	 * @return the wlanacip
+	 * @return the MAC
 	 */
-	public static final String getWlanacip() {
-		return Wlanacip;
+	public static final String getMAC() {
+		return MAC;
 	}
 
 	/**
-	 * @param wlanacip the wlanacip to set
+	 * @param MAC the MAC to set
 	 */
-	public static final void setWlanacip(String wlanacip) {
-		Wlanacip = wlanacip;
+	public static final void setMAC(String mac) {
+		MAC = mac;
 	}
 
 	/**

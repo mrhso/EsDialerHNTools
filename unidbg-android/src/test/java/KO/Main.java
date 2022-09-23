@@ -225,16 +225,16 @@ public class Main {
 			Constants.setIPV4(Objects.requireNonNull(args[0].trim(), "IPV4 is null"));
 			Constants.setAccount(Objects.requireNonNull(args[1].trim(), "Account is null"));
 			Constants.setPassword(Objects.requireNonNull(args[2].trim(), "Password is null"));
-			Constants.setWlanacip(Objects.requireNonNull(args[3].trim(), "wlanacip is null"));
+			Constants.setMAC(Objects.requireNonNull(args[3].trim(), "MAC is null"));
 
 			if (args.length >= 5)
 				Constants.setGateWayIP(args[4].trim());
 
 			log.accept("================\nIPv4 -> " + Constants.getIPV4() + " Account -> " + Constants.getAccount()
-					+ " PassWord -> " + Constants.getPassword() + " wlanacip -> " + Constants.getWlanacip()
+					+ " PassWord -> " + Constants.getPassword() + "MAC -> " + Constants.getMAC()
 					+ " Gateway -> " + Constants.getGateWayIP());
 		} else if (args.length == 0 && Constants.getIPV4().isEmpty()) {
-			log.accept("ERROR ! not enough arguments. usage -> IPV4 Account Password Wlanacip GateWayIP(Optional)");
+			log.accept("ERROR ! not enough arguments. usage -> IPV4 Account Password MAC GateWayIP(Optional)");
 			throw new Exception("NOT ENOUGH ARGUMENTS");
 		}
 		
@@ -263,38 +263,8 @@ public class Main {
 
 		});
 
-	
-
-		Thread main3 = new Thread(() -> {
-
-			do {
-
-				try {
-
-					WorkThread main = new WorkThread((String) Constants.getServerlist().get(1));
-					main.start();
-
-					WatchThread WatchThread = new WatchThread(main);
-					WatchThread.start();
-
-					main.join();
-					System.gc();
-
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-
-			} while (true);
-
-		});
-		
-		if(Math.random() > 0.5){
-            main2.start();
-            main2.join();
-		}
-
-		main3.start();
-		main3.join();
+		main2.start();
+		main2.join();
 
 	}
 }

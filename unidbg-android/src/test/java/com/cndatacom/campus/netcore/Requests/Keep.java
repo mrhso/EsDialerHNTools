@@ -15,9 +15,9 @@ public class Keep extends Request {
 	@Override
 	public String doAction() {
 		return HEAD + "<request><user-agent>" + Constants.getUseragent() + "</user-agent><client-id>"
-				+ clientID + "</client-id><local-time>" + getTime() + "</local-time><ipv4>"
-				+ Constants.getIPV4() + "</ipv4><ticket>" + Ticket + "</ticket>" + "<gwip>" + Constants.getGateWayIP() + "</gwip><mac>"
-				+ getMacAddrWithUUID(clientID) + "</mac><ipv6>null</ipv6><ostag>Linux</ostag><host-name>Honor" + clientID.substring(4, 8) + "</host-name>" + "</request>"; 
-
+				+ clientID + "</client-id><local-time>" + getTime() + "</local-time><excheck-args><hello>17615</hello><conn>26365</conn></excheck-args><ticket>"
+				+ Ticket + "</ticket><ipv4>" + Constants.getIPV4() + "</ipv4><ipv6></ipv6><mac>" + Constants.getMAC()
+				+ "</mac><sysinfo><sysname>Linux</sysname><machine>armv8l</machine><ifname>wlan0"
+				+ "</ifname><gsm.network.type>LTE,Unknown</gsm.network.type><ro.build.version.sdk>27</ro.build.version.sdk></sysinfo></request>";
 	}
 }

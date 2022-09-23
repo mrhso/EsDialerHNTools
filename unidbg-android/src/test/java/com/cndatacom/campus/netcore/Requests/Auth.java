@@ -15,9 +15,8 @@ public class Auth extends Request {
 	@Override
 	public String doAction() {
 		return HEAD + "<request><user-agent>" + Constants.getUseragent() + "</user-agent><client-id>"
-				+ clientID + "</client-id><local-time>" + getTime() + "</local-time><ipv4>"
-				+ Constants.getIPV4() + "</ipv4><userid>" + Constants.getAccount() + "</userid><passwd>" + Constants.getPassword()
-				+ "</passwd><ticket>" + Ticket + "</ticket>" + "<gwip>" + Constants.getGateWayIP() + "</gwip><mac>"
-				+ getMacAddrWithUUID(clientID) + "</mac><ipv6></ipv6><host-name>Honor" + clientID.substring(4, 8) + "</host-name><ostag>Linux</ostag>" + "</request>";
+				+ clientID + "</client-id><local-time>" + getTime() + "</local-time><ticket>" + Ticket + "</ticket><userid>"
+				+ Constants.getAccount() + "</userid><passwd>" + Constants.getPassword()
+				+ "</passwd></request>";
 	}
 }
