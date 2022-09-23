@@ -231,7 +231,7 @@ public class Main {
 				Constants.setGateWayIP(args[4].trim());
 
 			log.accept("================\nIPv4 -> " + Constants.getIPV4() + " Account -> " + Constants.getAccount()
-					+ " PassWord -> " + Constants.getPassword() + "MAC -> " + Constants.getMAC()
+					+ " PassWord -> " + Constants.getPassword() + " MAC -> " + Constants.getMAC()
 					+ " Gateway -> " + Constants.getGateWayIP());
 		} else if (args.length == 0 && Constants.getIPV4().isEmpty()) {
 			log.accept("ERROR ! not enough arguments. usage -> IPV4 Account Password MAC GateWayIP(Optional)");
