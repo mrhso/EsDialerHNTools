@@ -34,6 +34,7 @@ public class WatchThread extends Thread{
 			try {
 				if (target_thread.State.LoginThreadStage >= 1 && target_thread.State.LoginThreadStage < 4) {
 					if (System.currentTimeMillis() - target_thread.State.millToCheck > 16 * 1000) {
+						target_thread.doTerm();
 						target_thread.destroy();
 						
 						while(!target_thread.isInterrupted())
@@ -54,6 +55,7 @@ public class WatchThread extends Thread{
 				} else if(target_thread.State.LoginThreadStage == 4 
 						&& target_thread.nextCheckMS < System.currentTimeMillis()) {
 					log.accept(target_thread.getName() + "checkAlive timeout...");
+					target_thread.doTerm();
 					
 					while(!target_thread.isInterrupted())
 						target_thread.interrupt();
@@ -61,6 +63,7 @@ public class WatchThread extends Thread{
 					break;
 				} else if(target_thread.State.LoginThreadStage == 4 && Long.valueOf(target_thread.getExpire()) <= System.currentTimeMillis() / 1000 - 30) {
 					log.accept(target_thread.getName() + "Ticket expired...");
+					target_thread.doTerm();
 					
 					while(!target_thread.isInterrupted())
 						target_thread.interrupt();

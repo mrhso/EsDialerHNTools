@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import com.cndatacom.campus.netcore.Requests.Auth;
 import com.cndatacom.campus.netcore.Requests.Keep;
 import com.cndatacom.campus.netcore.Requests.Ticket;
+import com.cndatacom.campus.netcore.Requests.Term;
 
 import KO.data.Result;
 import KO.platform.PlatformAccess;
@@ -132,6 +133,16 @@ public class WorkThread extends Thread {
 			throw new Exception("Failed to do Authentication " + new Auth(ticket, getCurrentClientID().toString()).doAction());
 
 		return authResult;
+	}
+
+	public String doTerm() throws Exception {
+		String enc = ACCESS.encrypt(new Auth(ticket, getCurrentClientID().toString()).doAction());
+
+		Result doTerm = Tools.doPost(Constants.Urls.getTermURL(Server), enc, ACCESS, getCurrentClientID().toString());
+
+		String termResult = ACCESS.decrypt(new String(doTerm.result));
+
+		return termResult;
 	}
 
 	public void Keep() throws Exception {
