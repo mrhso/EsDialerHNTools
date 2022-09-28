@@ -288,10 +288,10 @@ public class Main {
 
 		});
 		
-		if(Math.random() > 0.5){
-            main2.start();
-            main2.join();
-		}
+// 		if(Math.random() > 0.5){
+//             		main2.start();
+//             		main2.join();
+// 		}
 
 		main3.start();
 		main3.join();
