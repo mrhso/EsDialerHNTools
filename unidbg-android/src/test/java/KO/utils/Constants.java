@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class Constants {
 
 	private static final List<?> serverList = Arrays
-			.asList(new String[] { "218.77.121.110" }); //index.cgi?wlanuserip ....
+			.asList(new String[] { "218.77.121.110", "218.77.121.110" }); //index.cgi?wlanuserip ....
 
 	private static final String UserAgent = "CCTP/Android4_vpn/2020";// CCTP/Android8/2075 android8Huizhou_vpn
 

@@ -119,6 +119,8 @@ public class WorkThread extends Thread {
 		String enc = ACCESS.encrypt(new Auth(ticket, getCurrentClientID().toString()).doAction());
 
 		Result doAuth = Tools.doPost(Constants.Urls.getAuthURL(Server), enc, ACCESS, getCurrentClientID().toString());
+		
+		System.out.println("结果状态码: " + doAuth.Error_Code);
 
 		String authResult = ACCESS.decrypt(new String(doAuth.result));
 

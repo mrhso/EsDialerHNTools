@@ -263,8 +263,38 @@ public class Main {
 
 		});
 
-		main2.start();
-		main2.join();
+	
+
+		Thread main3 = new Thread(() -> {
+
+			do {
+
+				try {
+
+					WorkThread main = new WorkThread((String) Constants.getServerlist().get(1));
+					main.start();
+
+					WatchThread WatchThread = new WatchThread(main);
+					WatchThread.start();
+
+					main.join();
+					System.gc();
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+
+			} while (true);
+
+		});
+		
+// 		if(Math.random() > 0.5){
+//             		main2.start();
+//             		main2.join();
+// 		}
+
+		main3.start();
+		main3.join();
 
 	}
 }
