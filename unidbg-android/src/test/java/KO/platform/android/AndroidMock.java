@@ -316,33 +316,33 @@ public class AndroidMock {
 
 		dm.callJNI_OnLoad(emulator);
 
+		if (Integer.getInteger("DumpZSM", 0) != 0) {
+			long A_0x2E80 = dm.getModule().base + 0x2E80 + 1;
+			HookZz hooks = HookZz.getInstance(emulator);
+			hooks.replace(A_0x2E80, new ReplaceCallback() {
+
+				private int len;
+				UnidbgPointer outPointer = null;
+
+				@Override
+				public HookStatus onCall(Emulator<?> emulator, HookContext context, long originFunction) {
+					len = context.getPointerArg(1).getInt(0);
+					outPointer = context.getPointerArg(0);
+
+					return HookStatus.RET(emulator, originFunction);
+				}
+
+				@Override
+				public void postCall(Emulator<?> emulator, HookContext context) {
+					try (OutputStream os = new FileOutputStream("zsm_unpacked", false)) {
+						os.write(outPointer.getByteArray(0, len));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}, true);
+		}
 
 		API = vm.resolveClass("com/cndatacom/campus/netcore/DaMod");
 	}
-	
-	static void writeByte(byte[] bytes)
-    {
- 
-        // Try block to check for exceptions
-        try {
- 
-            // Initialize a pointer in file
-            // using OutputStream
-            OutputStream os = new FileOutputStream("dump_", false);
- 
-            // Starting writing the bytes in it
-            os.write(bytes);
-
- 
-            // Close the file connections
-            os.close();
-        }
- 
-        // Catch block to handle the exceptions
-        catch (Exception e) {
- 
-            // Display exception on console
-            System.out.println("Exception: " + e);
-        }
-    }
 }
