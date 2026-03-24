@@ -11,9 +11,9 @@ import java.util.regex.Pattern;
 public class Constants {
 
 	private static final List<?> serverList = Arrays
-			.asList(new String[] { "218.77.121.110", "218.77.121.110" }); //index.cgi?wlanuserip ....
+			.asList(new String[] { "175.12.104.1:10001", "175.12.104.1:10001" }); //index.cgi?wlanuserip ....
 
-	private static final String UserAgent = "CCTP/Android4_vpn/2020";// CCTP/Android8/2075 android8Huizhou_vpn
+	private static final String UserAgent = "CCTP/android64_vpn/2028";// CCTP/Android8/2075 android8Huizhou_vpn
 
 	private static String MAC = "";
 
@@ -31,7 +31,7 @@ public class Constants {
 		
 		public static URL getTicketURL(String ser) throws MalformedURLException {
 			return new URL("http://" + ser + "/ticket.cgi?wlanuserip="
-					+ Constants.getIPV4() + "&mscgip=218.75.255.6&wlanusermac=" + Pattern.compile(":").matcher(Constants.getMAC()).replaceAll("-"));
+					+ Constants.getIPV4() + "&mscgip=218.75.255.6&wlanusermac=" + Constants.getMAC());
 		}
 		
 		public static URL getAuthURL(String ser) throws MalformedURLException {

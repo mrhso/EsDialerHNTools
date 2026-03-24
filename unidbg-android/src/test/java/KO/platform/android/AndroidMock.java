@@ -23,7 +23,7 @@ import com.github.unidbg.arm.backend.Unicorn2Factory;
 import com.github.unidbg.hook.HookContext;
 import com.github.unidbg.hook.ReplaceCallback;
 import com.github.unidbg.hook.hookzz.HookZz;
-import com.github.unidbg.linux.android.AndroidARMEmulator;
+import com.github.unidbg.linux.android.AndroidARM64Emulator;
 import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
 import com.github.unidbg.linux.android.AndroidResolver;
 import com.github.unidbg.linux.android.dvm.AbstractJni;
@@ -33,7 +33,7 @@ import com.github.unidbg.linux.android.dvm.DvmClass;
 import com.github.unidbg.linux.android.dvm.DvmObject;
 import com.github.unidbg.linux.android.dvm.StringObject;
 import com.github.unidbg.linux.android.dvm.VM;
-import com.github.unidbg.linux.android.dvm.VarArg;
+import com.github.unidbg.linux.android.dvm.VaList;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.memory.MemoryBlock;
 import com.github.unidbg.pointer.UnidbgPointer;
@@ -220,7 +220,7 @@ public class AndroidMock {
 
 		AndroidEmulatorBuilder builder = new AndroidEmulatorBuilder(false) {
 			public AndroidEmulator build() {
-				return new AndroidARMEmulator(processName, rootDir, backendFactories) {
+				return new AndroidARM64Emulator(processName, rootDir, backendFactories) {
 				};
 			}
 		};
@@ -230,7 +230,7 @@ public class AndroidMock {
 		log.accept("using Unicorn2Factory");
 
 		emulator = builder.addBackendFactory(new Unicorn2Factory(false))
-				.setProcessName("com.cndatacom.campus.cdccportalgd").build();
+				.setProcessName("com.cndatacom.jscportal").build();
 
 		memory = emulator.getMemory();
 		memory.setLibraryResolver(new AndroidResolver(23));
@@ -242,7 +242,7 @@ public class AndroidMock {
 		vm.setVerbose(false);
 		vm.setJni(new AbstractJni() {
 			@Override
-			public DvmObject<?> callObjectMethod(BaseVM vm, DvmObject<?> dvmObject, String signature, VarArg varArg) {
+			public DvmObject<?> callObjectMethodV(BaseVM vm, DvmObject<?> dvmObject, String signature, VaList vaList) {
 
 				switch (signature) {
 				case "android/content/Context->getFilesDir()Ljava/io/File;":
@@ -255,11 +255,11 @@ public class AndroidMock {
 					}
 					return cache;
 				}
-				return super.callObjectMethod(vm, dvmObject, signature, varArg);
+				return super.callObjectMethodV(vm, dvmObject, signature, vaList);
 			}
 
 			@Override
-			public DvmObject<?> callStaticObjectMethod(BaseVM vm, DvmClass dvmClass, String signature, VarArg varArg) {
+			public DvmObject<?> callStaticObjectMethodV(BaseVM vm, DvmClass dvmClass, String signature, VaList vaList) {
 
 				switch (signature) {
 				case "android/app/ActivityThread->currentPackageName()Ljava/lang/String;":
@@ -271,7 +271,7 @@ public class AndroidMock {
 									.newObject(signature));
 				}
 
-				return super.callStaticObjectMethod(vm, dvmClass, signature, varArg);
+				return super.callStaticObjectMethodV(vm, dvmClass, signature, vaList);
 
 			}
 		});
