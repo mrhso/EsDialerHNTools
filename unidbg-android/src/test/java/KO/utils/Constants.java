@@ -31,7 +31,7 @@ public class Constants {
 		
 		public static URL getTicketURL(String ser) throws MalformedURLException {
 			return new URL("http://" + ser + "/ticket.cgi?wlanuserip="
-					+ Constants.getIPV4() + "&mscgip=218.75.255.6&wlanusermac=" + Constants.getMAC());
+					+ Constants.getIPV4() + "&mscgip=218.75.255.6&wlanusermac=" + Pattern.compile(":").matcher(Constants.getMAC()).replaceAll("-"));
 		}
 		
 		public static URL getAuthURL(String ser) throws MalformedURLException {
@@ -58,7 +58,7 @@ public class Constants {
 	 * @param MAC the MAC to set
 	 */
 	public static final void setMAC(String mac) {
-		MAC = mac;
+		MAC = Pattern.compile("-").matcher(mac.toLowerCase()).replaceAll(":");
 	}
 
 	/**

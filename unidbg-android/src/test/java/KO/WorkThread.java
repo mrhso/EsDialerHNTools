@@ -227,7 +227,7 @@ public class WorkThread extends Thread {
 			init();
 			getTicket();
 			doAuth();
-			Keep();
+			//Keep();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
